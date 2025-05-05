@@ -4,7 +4,7 @@
 
 # Phase 1 - Get ComfyUI and platform-specific torch versions
 
-FROM python:3.12-slim AS base
+FROM python:3.13-slim AS base
 RUN python3 -m venv /opt/ComfyUI.venv
 RUN apt update && apt install git -yq
 WORKDIR /opt
@@ -16,21 +16,21 @@ RUN rm -rf .git
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && pip install --no-cache-dir --quiet -r requirements.txt
 
-FROM python:3.12-slim AS amd_torch
+FROM python:3.13-slim AS amd_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
     pip install --no-cache-dir --quiet torch torchvision torchaudio \
         --index-url https://download.pytorch.org/whl/rocm6.2.4
 
-FROM python:3.12-slim AS intel_torch
+FROM python:3.13-slim AS intel_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
     pip install --no-cache-dir --quiet --pre torch torchvision torchaudio \
         --index-url https://download.pytorch.org/whl/nightly/xpu
 
-FROM python:3.12-slim AS nvidia_torch
+FROM python:3.13-slim AS nvidia_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
@@ -39,21 +39,21 @@ RUN . /opt/ComfyUI.venv/bin/activate && \
 
 # Phrase 2 - Combine dependencies
 
-FROM python:3.12-slim AS amd_flatten
+FROM python:3.13-slim AS amd_flatten
 COPY --chown=nobody:nogroup --from=base /opt /opt
 COPY --chown=nobody:nogroup --from=amd_torch /opt /opt
 
-FROM python:3.12-slim AS intel_flatten
+FROM python:3.13-slim AS intel_flatten
 COPY --chown=nobody:nogroup --from=base /opt /opt
 COPY --chown=nobody:nogroup --from=intel_torch /opt /opt
 
-FROM python:3.12-slim AS nvidia_flatten
+FROM python:3.13-slim AS nvidia_flatten
 COPY --chown=nobody:nogroup --from=base /opt /opt
 COPY --chown=nobody:nogroup --from=nvidia_torch /opt /opt
 
 # Phase 3 - Build final images
 
-FROM python:3.12-slim AS final_base
+FROM python:3.13-slim AS final_base
 ENTRYPOINT ["/bin/bash", "/usr/local/bin/entrypoint.sh"]
 ENV CORS_HEADER=*
 ENV CPU_ONLY=false
