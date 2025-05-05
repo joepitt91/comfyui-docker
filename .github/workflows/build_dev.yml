@@ -79,6 +79,9 @@ jobs:
       matrix:
         target: [ amd, cpu, intel, nvidia ]
     steps:
+      - name: Free Up Disk Space
+        uses: jlumbroso/free-disk-space@main
+
       - name: Image Information
         run: echo "Building image of ComfyUI ${{ needs.versions.outputs.comfyui }} with torch v${{ needs.versions.outputs.torch }} for ${{ matrix.target }} architectures from python:3.12-slim with digest ${{ needs.versions.outputs.base_image }}"
 
