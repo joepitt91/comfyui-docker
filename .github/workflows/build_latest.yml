@@ -55,7 +55,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PUBLIC_READ_TOKEN }}
         run: | 
           cd version_checker/
-          CURRENT_VERSION=$(python3 gh_tag.py)
+          CURRENT_VERSION="v$(python3 gh_tag.py)"
           CURRENT_VERSION_PARTS=()
           IFS=. read -r -a CURRENT_VERSION_PARTS <<< "${CURRENT_VERSION:1}"
 
