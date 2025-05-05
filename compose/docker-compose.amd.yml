@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: 2025 Joe Pitt
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+---
+services:
+  comfyui:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [ gpu ]
+              count: all
+              driver: amd
+    env_file:
+      - path: ./comfyui.env
+        required: false
+    image: ghcr.io/joepitt91/comfyui-docker:amd
+    ports:
+      - 127.0.0.1:8188:8188
+    volumes:
+      - tls:/etc/ssl/private/:ro
+      - content:/opt/content
+      - tmp:/tmp/comfyui
+volumes:
+  content: null
+  tls: null
+  tmp: null

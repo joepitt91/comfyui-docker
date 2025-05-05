@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: 2025 Joe Pitt
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+---
+updates:
+  - directory: /
+    package-ecosystem: docker
+    schedule:
+      interval: weekly
+  - directory: /
+    package-ecosystem: docker-compose
+    schedule:
+      interval: weekly
+  - directory: /
+    package-ecosystem: github-actions
+    schedule:
+      interval: weekly
+  - directory: /
+    package-ecosystem: pip
+    schedule:
+      interval: weekly
+version: 2

@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: 2025 Joe Pitt
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+---
+services:
+  comfyui:
+    build:
+      context: https://github.com/joepitt91/comfyui-docker.git
+      args:
+        - COMFYUI_VERSION=0.3.31
+      pull: true
+      tags:
+        - localhost/_/comfyui:amd
+        - localhost/_/comfyui:0.3.31-amd
+      target: amd
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [ gpu ]
+              count: all
+              driver: amd
+    env_file:
+      - path: ./comfyui.env
+        required: false
+    ports:
+      - 127.0.0.1:8188:8188
+    volumes:
+      - tls:/etc/ssl/private/:ro
+      - content:/opt/content
+      - tmp:/tmp/comfyui
+volumes:
+  content: null
+  tls: null
+  tmp: null
