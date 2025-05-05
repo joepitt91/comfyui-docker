@@ -5,6 +5,8 @@
 name: Build Development Images
 on:
   push:
+    branches: 
+      - "*"
   pull_request:
   workflow_dispatch:
 permissions:
