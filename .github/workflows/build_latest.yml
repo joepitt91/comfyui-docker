@@ -34,7 +34,7 @@ jobs:
         env:
           PIP_ROOT_USER_ACTION: ignore
         run: |
-          python -m pip install -q --upgrade pip
+          python3 -m pip install -q --upgrade pip
           pip install -q -r version_checker/requirements.txt
 
       - id: base_image
@@ -46,7 +46,7 @@ jobs:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}  
         run: |
           cd version_checker/
-          python docker_image.py >>$GITHUB_OUTPUT
+          python3 docker_image.py >>$GITHUB_OUTPUT
 
       - id: comfyui
         name: Get Latest Version of ComfyUI
@@ -54,7 +54,7 @@ jobs:
           GITHUB_REPO: comfyanonymous/ComfyUI
         run: | 
           cd version_checker/
-          CURRENT_VERSION=$(python gh_tag.py)
+          CURRENT_VERSION=$(python3 gh_tag.py)
           CURRENT_VERSION_PARTS=()
           IFS=. read -r -a CURRENT_VERSION_PARTS <<< "${CURRENT_VERSION:1}"
 
@@ -67,7 +67,7 @@ jobs:
         name: Get Latest Version of Torch
         run: |
           cd version_checker/
-          PIP_PACKAGE=torch python pip_module.py >> $GITHUB_OUTPUT
+          PIP_PACKAGE=torch python3 pip_module.py >> $GITHUB_OUTPUT
 
       - id: build_needed
         name: Check if a New Build is Required
