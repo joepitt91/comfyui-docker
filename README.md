@@ -17,16 +17,16 @@ hardware support in place, if not these links may help you get started:
 
 ## Getting Started
 
-Throughout this guide, you need to replace `{TAG}` with the `amd`, `cpu`, `intel` or `nvidia` as
-appropriate tag for your system.
-
 To run ComfyUI:
 
 1. Download `compose/docker-compose.{TAG}.yml` to a suitable directory on your Docker host.
-    * A pre-built image will be pulled from GitHub Container Registry (ghcr.io).
+    * Replace `{TAG}` with the `cpu`, `intel` or `nvidia` as appropriate tag for your system.
     * If you'd prefer to build the image locally, use `compose/docker-compose.{TAG}.build.yml`
         instead, you'll need to update `services.comfyui.build.args` and
         `services.comfyui.build.tags` to the ComfyUI version you wish to build.
+    * **NOTE**: The AMD dependencies are too large (~23GB) to build the image on GitHub Actions.
+        You **MUST** build the image locally using `compose/docker-compose.amd.build.yml` to run on
+        AMD hardware.
 2. Rename your chosen file to `docker-compose.yml`.
 2. Open a terminal in the chosen directory.
 3. Start the service by running:
@@ -121,9 +121,7 @@ the docker host and clients, rules will need to be added to allow access.
 
 ## More Details
 
-### Build Arguments
-
-### Tags
+### Image Tags
 
 #### Architecture
 
@@ -132,15 +130,16 @@ Each supported hardware architecture has an associated set of images tagged as f
 
 The supported architecture tags are:
 
-* `amd` - runs ComfyUI on a supported AMD graphics card.
 * `cpu` - runs ComfyUI on the CPU, rather than GPU - slow but widely compatible.
 * `intel` - runs ComfyUI on a supported Intel Arc graphics card.
 * `nvidia` - runs ComfyUI on a supported NVIDIA graphics card.
 
+**NOTE:** As above the AMD image must be build locally due to the size of its dependencies.
+
 #### ComfyUI Version
 
-Each version of ComfyUI, starting with v0.3.31, has associated tags for each architecture, taking
-the `cpu` architecture as an example, these include:
+Each imaged version of ComfyUI, has associated tags for each architecture, taking the `cpu`
+architecture as an example, these include:
 
 * `cpu` - The latest release of ComfyUI for the `cpu` architecture.
 * `0-cpu` - The latest 0.*.* release of ComfyUI for the `cpu` architecture.

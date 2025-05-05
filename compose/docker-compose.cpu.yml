@@ -8,7 +8,7 @@ services:
     env_file:
       - path: ./comfyui.env
         required: false
-    image: ghcr.io/joepitt91/comfyui-docker:cpu
+    image: ghcr.io/joepitt91/comfyui:cpu
     ports:
       - 127.0.0.1:8188:8188
     volumes:

@@ -43,10 +43,6 @@ FROM python:3.12-slim AS amd_flatten
 COPY --chown=nobody:nogroup --from=base /opt /opt
 COPY --chown=nobody:nogroup --from=amd_torch /opt /opt
 
-# The AMD dependencies are ~23GB - must compress to fit into a Docker layer (<10G)
-WORKDIR /opt
-RUN tar cfz /tmp/amd.tgz *
-
 FROM python:3.12-slim AS intel_flatten
 COPY --chown=nobody:nogroup --from=base /opt /opt
 COPY --chown=nobody:nogroup --from=intel_torch /opt /opt
@@ -85,7 +81,7 @@ LABEL org.opencontainers.image.version=${COMFYUI_VERSION}
 ENV COMFYUI_VERSION=${COMFYUI_VERSION} TORCH_VERSION=${TORCH_VERSION}
 
 FROM final_base AS amd
-COPY --chown=nobody:nogroup --from=amd_flatten /tmp/amd.tgz /tmp/amd.tgz
+COPY --chown=nobody:nogroup --from=amd_flatten /opt /opt
 
 FROM final_base AS cpu
 ENV CPU_ONLY=true

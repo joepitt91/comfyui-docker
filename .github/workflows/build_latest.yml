@@ -90,7 +90,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [ amd, cpu, intel, nvidia ]
+        target: [ cpu, intel, nvidia ]
     steps:
       - name: Free Up Disk Space
         uses: jlumbroso/free-disk-space@main
