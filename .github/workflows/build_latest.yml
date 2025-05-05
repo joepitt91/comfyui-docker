@@ -130,7 +130,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Update BASE_IMAGE
-        uses: mmoyaferrer/set-github-variable@v1.0.0
+        uses: mmoyaferrer/set-github-variable@v9.9.5
         with:
           name: BASE_IMAGE
           repository: ${{ github.repository }}
@@ -138,7 +138,7 @@ jobs:
           value: ${{ needs.versions.outputs.base_image }}
 
       - name: Update COMFYUI_VERSION
-        uses: mmoyaferrer/set-github-variable@v1.0.0
+        uses: mmoyaferrer/set-github-variable@v9.9.5
         with:
           name: COMFYUI_VERSION
           repository: ${{ github.repository }}
@@ -146,7 +146,7 @@ jobs:
           value: ${{ needs.versions.outputs.comfyui }}
 
       - name: Update TORCH_VERSION
-        uses: mmoyaferrer/set-github-variable@v1.0.0
+        uses: mmoyaferrer/set-github-variable@v9.9.5
         with:
           name: TORCH_VERSION
           repository: ${{ github.repository }}
