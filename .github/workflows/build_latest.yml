@@ -75,7 +75,7 @@ jobs:
         run: |
           if [ "${{ steps.base_image.outputs.digest }}" == "${{ vars.BASE_IMAGE }}"  ] && \
              [ "${{ steps.comfyui.outputs.version }}" == "${{ vars.COMFYUI_VERSION }}"  ] && \
-             [ "${{ steps.torch.outputs.version }}" == "${{ vars.TORCH_VERSION }}"  ]; then
+             [ "${{ steps.torch.outputs.torch }}" == "${{ vars.TORCH_VERSION }}"  ]; then
             echo "needed=no" >>$GITHUB_OUTPUT
           else
             echo "needed=yes" >>$GITHUB_OUTPUT
