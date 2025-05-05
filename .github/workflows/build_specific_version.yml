@@ -78,6 +78,7 @@ jobs:
     needs:
       - versions
     strategy:
+      fail-fast: false
       matrix:
         target: [ amd, cpu, intel, nvidia ]
     steps:
