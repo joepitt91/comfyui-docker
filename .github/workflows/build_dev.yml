@@ -51,7 +51,8 @@ jobs:
         name: Get Latest Version of ComfyUI
         env:
           GITHUB_REPO: comfyanonymous/ComfyUI
-        run: | 
+        run: |
+          cd version_checker/
           CURRENT_VERSION=$(python gh_tag.py)
           CURRENT_VERSION_PARTS=()
           IFS=. read -r -a CURRENT_VERSION_PARTS <<< "${CURRENT_VERSION:1}"
@@ -63,7 +64,9 @@ jobs:
 
       - id: torch
         name: Get Latest Version of Torch
-        run: PIP_PACKAGE=torch python pip_module.py >> $GITHUB_OUTPUT
+        run: |
+          cd version_checker/
+          PIP_PACKAGE=torch python pip_module.py >> $GITHUB_OUTPUT
 
   build:
     name: Build Images

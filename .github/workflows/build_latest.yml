@@ -53,6 +53,7 @@ jobs:
         env:
           GITHUB_REPO: comfyanonymous/ComfyUI
         run: | 
+          cd version_checker/
           CURRENT_VERSION=$(python gh_tag.py)
           CURRENT_VERSION_PARTS=()
           IFS=. read -r -a CURRENT_VERSION_PARTS <<< "${CURRENT_VERSION:1}"
@@ -64,12 +65,13 @@ jobs:
 
       - id: torch
         name: Get Latest Version of Torch
-        run: PIP_PACKAGE=torch python pip_module.py >> $GITHUB_OUTPUT
+        run: |
+          cd version_checker/
+          PIP_PACKAGE=torch python pip_module.py >> $GITHUB_OUTPUT
 
       - id: build_needed
         name: Check if a New Build is Required
         run: |
-          cd ..
           if [ "${{ steps.base_image.outputs.digest }}" == "${{ vars.BASE_IMAGE }}"  ] && \
              [ "${{ steps.comfyui.outputs.version }}" == "${{ vars.COMFYUI_VERSION }}"  ] && \
              [ "${{ steps.torch.outputs.version }}" == "${{ vars.TORCH_VERSION }}"  ]; then
