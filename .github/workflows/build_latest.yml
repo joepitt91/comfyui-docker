@@ -132,6 +132,10 @@ jobs:
       - versions
     runs-on: ubuntu-latest
     steps:
+      - name: Install Dependencies
+        run: |
+          npm i @actions/core
+          npm i @actions/github
       - name: Update BASE_IMAGE
         uses: mmoyaferrer/set-github-variable@v9.9.5
         with:
