@@ -132,12 +132,8 @@ jobs:
       - versions
     runs-on: ubuntu-latest
     steps:
-      - name: Install Dependencies
-        run: |
-          npm i @actions/core
-          npm i @actions/github
       - name: Update BASE_IMAGE
-        uses: mmoyaferrer/set-github-variable@v9.9.5
+        uses: mmoyaferrer/set-github-variable@v1.0.0
         with:
           name: BASE_IMAGE
           repository: ${{ github.repository }}
@@ -145,7 +141,7 @@ jobs:
           value: ${{ needs.versions.outputs.base_image }}
 
       - name: Update COMFYUI_VERSION
-        uses: mmoyaferrer/set-github-variable@v9.9.5
+        uses: mmoyaferrer/set-github-variable@v1.0.0
         with:
           name: COMFYUI_VERSION
           repository: ${{ github.repository }}
@@ -153,7 +149,7 @@ jobs:
           value: ${{ needs.versions.outputs.comfyui }}
 
       - name: Update TORCH_VERSION
-        uses: mmoyaferrer/set-github-variable@v9.9.5
+        uses: mmoyaferrer/set-github-variable@v1.0.0
         with:
           name: TORCH_VERSION
           repository: ${{ github.repository }}
