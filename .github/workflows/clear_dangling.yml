@@ -27,6 +27,6 @@ jobs:
                 }
             }
         env:
-          OWNER: joepitt91
+          OWNER: users/joepitt91
           PACKAGE_NAME: comfyui
           PER_PAGE: 100
