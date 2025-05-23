@@ -4,6 +4,8 @@
 
 name: Clear Dangling Images
 on:
+  schedule:
+    - cron: 50 * * * *
   workflow_dispatch:
 permissions:
   contents: read
