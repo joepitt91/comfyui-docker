@@ -14,69 +14,40 @@ permissions:
   contents: read
   packages: write
 jobs:
-  versions:
-    name: Version Information
+  dependencies:
+    name: Get Dependency Information
     runs-on: ubuntu-latest
     outputs:
-      base_image: ${{ steps.base_image.outputs.digest }}
-      comfyui: ${{ steps.comfyui.outputs.version }}
-      comfyui_patch: ${{ steps.comfyui.outputs.patch }}
-      comfyui_minor: ${{ steps.comfyui.outputs.minor }}
-      comfyui_major: ${{ steps.comfyui.outputs.major }}
-      torch: ${{ steps.torch.outputs.torch }}
+      python_digest: ${{ steps.digest.outputs.digest }}
+      torch_version: ${{ steps.torch.outputs.version }}
+      patch_tag: ${{ steps.image_tags.outputs.patch_tag}}
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python 3.13
-        uses: actions/setup-python@v5
+      - name: Get Current Digest for Python 3.12 image
+        id: digest
+        uses: joepitt91/action-digest-from-dockerhub-image@v1
         with:
-          python-version: 3.13
+          dockerhub_username: ${{ secrets.DOCKER_USER }}
+          dockerhub_token: ${{ secrets.DOCKER_PASSWORD }}
+          repository: python
+          tag: 3.12-slim
 
-      - name: Install Dependencies
-        env:
-          PIP_ROOT_USER_ACTION: ignore
-        run: |
-          python3 -m pip install -q --upgrade pip
-          pip install -q -r version_checker/requirements.txt
+      - name: Convert Version to Tags
+        id: image_tags
+        uses: joepitt91/action-version-to-tags@v1
+        with:
+          version: ${{ inputs.version }}
 
-      - id: base_image
-        name: Get Base Image Digest
-        env:
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          DOCKER_REPOSITORY: library/python
-          DOCKER_TAG: '3.12-slim'
-          DOCKER_USER: ${{ secrets.DOCKER_USER }}  
-        run: |
-          cd version_checker/
-          python3 docker_image.py >>$GITHUB_OUTPUT
-
-      - id: comfyui
-        name: Get Latest Version of ComfyUI
-        env:
-          GITHUB_REPO: comfyanonymous/ComfyUI
-          GITHUB_TOKEN: ${{ secrets.PUBLIC_READ_TOKEN }}
-        run: |
-          cd version_checker/
-          CURRENT_VERSION="${{ inputs.version }}"
-          CURRENT_VERSION_PARTS=()
-          IFS=. read -r -a CURRENT_VERSION_PARTS <<< "${CURRENT_VERSION:1}"
-
-          echo "version=${CURRENT_VERSION}" >>$GITHUB_OUTPUT
-          echo "patch=${CURRENT_VERSION:1}" >>$GITHUB_OUTPUT
-          echo "minor=${CURRENT_VERSION_PARTS[0]}.${CURRENT_VERSION_PARTS[1]}" >>$GITHUB_OUTPUT
-          echo "major=${CURRENT_VERSION_PARTS[0]}" >>$GITHUB_OUTPUT
-
-      - id: torch
-        name: Get Latest Version of Torch
-        run: |
-          cd version_checker/
-          PIP_PACKAGE=torch python3 pip_module.py >> $GITHUB_OUTPUT
+      - name: Get Current Version from PyPI Module
+        id: torch
+        uses: joepitt91/action-version-from-pypi@v1
+        with:
+          module: torch
 
   build:
     name: Build Images
     runs-on: ubuntu-latest
     needs:
-      - versions
+      - dependencies
     strategy:
       fail-fast: false
       matrix:
@@ -86,7 +57,7 @@ jobs:
         uses: jlumbroso/free-disk-space@main
 
       - name: Image Information
-        run: echo "Building image of ComfyUI ${{ needs.versions.outputs.comfyui }} with torch v${{ needs.versions.outputs.torch }} for ${{ matrix.target }} architectures from python:3.12-slim with digest ${{ needs.versions.outputs.base_image }}"
+        run: echo "Building image of ComfyUI ${{ inputs.version }} with torch v${{ needs.dependencies.outputs.torch_version }} for ${{ matrix.target }} architectures from python:3.12-slim with digest ${{ needs.dependencies.outputs.python_digest }}"
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -102,12 +73,12 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           build-args: |
-            COMFYUI_VERSION=${{ needs.versions.outputs.comfyui }}
-            TORCH_VERSION=${{ needs.versions.outputs.torch }}
+            COMFYUI_VERSION=${{ inputs.version }}
+            TORCH_VERSION=${{ needs.dependencies.outputs.torch_version }}
           provenance: true
           pull: true
           push: true
           sbom: true
           tags: |
-            ghcr.io/joepitt91/comfyui:${{ needs.versions.outputs.comfyui_patch }}-${{ matrix.target }}
+            ghcr.io/joepitt91/comfyui:${{ needs.dependencies.outputs.patch_tag }}-${{ matrix.target }}
           target: ${{ matrix.target }}
