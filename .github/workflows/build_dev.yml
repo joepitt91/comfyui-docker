@@ -81,5 +81,5 @@ jobs:
           push: true
           sbom: true
           tags: |
-            ghcr.io/joepitt91/comfyui:${{ matrix.target }}_${{ github.event_name }}_${{ github.sha }}
+            ghcr.io/joepitt91/comfyui-dev:${{ matrix.target }}_${{ github.event_name }}_${{ github.sha }}
           target: ${{ matrix.target }}
