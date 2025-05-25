@@ -10,6 +10,15 @@ on:
         description: The ComfyUI version to build (with preceding "v")
         required: true
         type: string
+      tag_level:
+        default: patch
+        description: The highest level of tagging to apply.
+        options:
+          - major
+          - minor
+          - patch
+        required: false
+        type: choice
 permissions:
   contents: read
   packages: write
@@ -21,6 +30,8 @@ jobs:
       python_digest: ${{ steps.digest.outputs.digest }}
       torch_version: ${{ steps.torch.outputs.version }}
       patch_tag: ${{ steps.image_tags.outputs.patch_tag}}
+      minor_tag: ${{ steps.image_tags.outputs.minor_tag}}
+      major_tag: ${{ steps.image_tags.outputs.major_tag}}
     steps:
       - name: Get Current Digest for Python 3.12 image
         id: digest
@@ -69,7 +80,8 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and Push Image for ${{ matrix.target }}
+      - name: Build and Push Image for ${{ matrix.target }} (patch)
+        if: inputs.tag_level == 'patch'
         uses: docker/build-push-action@v6
         with:
           build-args: |
@@ -81,4 +93,37 @@ jobs:
           sbom: true
           tags: |
             ghcr.io/joepitt91/comfyui:${{ needs.dependencies.outputs.patch_tag }}-${{ matrix.target }}
+          target: ${{ matrix.target }}
+
+      - name: Build and Push Image for ${{ matrix.target }} (minor)
+        if: inputs.tag_level == 'minor'
+        uses: docker/build-push-action@v6
+        with:
+          build-args: |
+            COMFYUI_VERSION=${{ inputs.version }}
+            TORCH_VERSION=${{ needs.dependencies.outputs.torch_version }}
+          provenance: true
+          pull: true
+          push: true
+          sbom: true
+          tags: |
+            ghcr.io/joepitt91/comfyui:${{ needs.dependencies.outputs.patch_tag }}-${{ matrix.target }}
+            ghcr.io/joepitt91/comfyui:${{ needs.dependencies.outputs.minor_tag }}-${{ matrix.target }}
+          target: ${{ matrix.target }}
+
+      - name: Build and Push Image for ${{ matrix.target }} (major)
+        if: inputs.tag_level == 'major'
+        uses: docker/build-push-action@v6
+        with:
+          build-args: |
+            COMFYUI_VERSION=${{ inputs.version }}
+            TORCH_VERSION=${{ needs.dependencies.outputs.torch_version }}
+          provenance: true
+          pull: true
+          push: true
+          sbom: true
+          tags: |
+            ghcr.io/joepitt91/comfyui:${{ needs.dependencies.outputs.patch_tag }}-${{ matrix.target }}
+            ghcr.io/joepitt91/comfyui:${{ needs.dependencies.outputs.minor_tag }}-${{ matrix.target }}
+            ghcr.io/joepitt91/comfyui:${{ needs.dependencies.outputs.major_tag }}-${{ matrix.target }}
           target: ${{ matrix.target }}
