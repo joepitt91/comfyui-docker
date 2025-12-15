@@ -33,7 +33,7 @@ jobs:
 
       - name: Get Latest ComfyUI Version
         id: comfyui
-        uses: joepitt91/action-version-from-github-tag@v1
+        uses: joepitt91/action-version-from-github-tag@v2
         with:
           token: ${{ secrets.PUBLIC_READ_TOKEN }}
           owner: comfyanonymous
