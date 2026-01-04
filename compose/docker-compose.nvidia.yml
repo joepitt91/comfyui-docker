@@ -18,13 +18,13 @@ services:
     image: ghcr.io/joepitt91/comfyui:nvidia
     ports:
       - 127.0.0.1:8188:8188
+    tmpfs:
+      - /tmp/comfyui
     volumes:
       - tls:/etc/ssl/private/:ro
       - content:/opt/content
-      - tmp:/tmp/comfyui
       - user_db:/opt/ComfyUI/user
 volumes:
   content: null
   tls: null
-  tmp: null
   user_db: null
