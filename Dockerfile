@@ -61,6 +61,7 @@ ENV GPU_ONLY=false
 ENV LISTEN_ADDR=0.0.0.0
 ENV MAX_UPLOAD_MB=100
 ENV SPLIT_CROSS_ATTENTION=false
+ENV XDG_CACHE_HOME=/opt/content/cache
 ENV VRAM=auto
 EXPOSE 8188
 LABEL org.opencontainers.image.authors=joepitt91
