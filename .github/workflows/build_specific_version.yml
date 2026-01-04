@@ -90,8 +90,6 @@ jobs:
           build-args: |
             COMFYUI_VERSION=${{ inputs.version }}
             TORCH_VERSION=${{ needs.dependencies.outputs.torch_version }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           provenance: true
           pull: true
           push: true
