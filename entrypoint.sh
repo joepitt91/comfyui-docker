@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# SPDX-FileCopyrightText: 2025 Joe Pitt
+# SPDX-FileCopyrightText: 2025-2026 Joe Pitt
 #
 # SPDX-License-Identifier: GPL-3.0-only
 
