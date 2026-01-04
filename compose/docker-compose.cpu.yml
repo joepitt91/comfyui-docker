@@ -15,7 +15,9 @@ services:
       - tls:/etc/ssl/private/:ro
       - content:/opt/content
       - tmp:/tmp/comfyui
+      - user_db:/opt/ComfyUI/user
 volumes:
   content: null
   tls: null
   tmp: null
+  user_db: null

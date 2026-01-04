@@ -75,7 +75,7 @@ RUN mkdir -p /etc/ssl/private/ /opt/content /opt/ComfyUI /opt/ComfyUI.venv /tmp/
     chown -R nobody:nogroup /etc/ssl/private/ /opt/content /opt/ComfyUI /opt/ComfyUI.venv /tmp/comfyui
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 USER nobody
-VOLUME /etc/ssl/private/ /opt/content /tmp/comfyui
+VOLUME /etc/ssl/private/ /opt/ComfyUI/user /opt/content /tmp/comfyui
 ARG COMFYUI_VERSION=v0.0.0 TORCH_VERSION=latest
 LABEL org.opencontainers.image.version=${COMFYUI_VERSION}
 ENV COMFYUI_VERSION=${COMFYUI_VERSION} TORCH_VERSION=${TORCH_VERSION}
