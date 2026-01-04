@@ -33,7 +33,7 @@ jobs:
 
       - name: Get Latest ComfyUI Version
         id: comfyui
-        uses: joepitt91/action-version-from-github-tag@v1
+        uses: joepitt91/action-version-from-github-tag@v2
         with:
           token: ${{ secrets.PUBLIC_READ_TOKEN }}
           owner: comfyanonymous
@@ -45,7 +45,7 @@ jobs:
         with:
           version: ${{ steps.comfyui.outputs.version }}
 
-      - name: Get Current Version from PyPI Module
+      - name: Get Latest Torch from PyPI Module
         id: torch
         uses: joepitt91/action-version-from-pypi@v1
         with:
