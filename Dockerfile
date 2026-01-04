@@ -58,6 +58,7 @@ ENTRYPOINT ["/bin/bash", "/usr/local/bin/entrypoint.sh"]
 ENV CORS_HEADER=*
 ENV CPU_ONLY=false
 ENV GPU_ONLY=false
+ENV LISTEN_ADDR=0.0.0.0
 ENV MAX_UPLOAD_MB=100
 ENV SPLIT_CROSS_ATTENTION=false
 ENV VRAM=auto

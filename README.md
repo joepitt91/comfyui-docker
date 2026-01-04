@@ -157,6 +157,7 @@ only variables being changed from their Default need to be present in the file.
 | `CORS_HEADER` | Set the Cross-Origin Resource Sharing (CORS) header to restrict access from other domains. Can be set to either `*` for unrestricted or a URL to limit CORS requests to that domain and protocol. | `*` |
 | `CPU_ONLY` | Run on the CPU only - this will be slow and should be used with the `cpu` tag. | ` false` |
 | `GPU_ONLY` | Run all operations on the GPU only. | ` false` |
+| `LISTEN_ADDR` | What address, within the container, ComfyUI should bind to (e.g. `0.0.0.0,::` for dual-stack environments). | `0.0.0.0` |
 | `MAX_UPLOAD_MB` | The maximum upload size in megabytes - when running behind a reverse proxy ensure to set this there too. | `100` |
 | `SPLIT_CROSS_ATTENTION` | Enable Split Cross Attention - can help with some memory and speed issues | `false ` |
 | `VRAM` | The VRAM profile to run with, can be `auto`, `high`, `normal`, `low` or `no`. | `auto` |
