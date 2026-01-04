@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 Joe Pitt
+# SPDX-FileCopyrightText: 2025-2026 Joe Pitt
 #
 # SPDX-License-Identifier: GPL-3.0-only
 
@@ -58,8 +58,10 @@ ENTRYPOINT ["/bin/bash", "/usr/local/bin/entrypoint.sh"]
 ENV CORS_HEADER=*
 ENV CPU_ONLY=false
 ENV GPU_ONLY=false
+ENV LISTEN_ADDR=0.0.0.0
 ENV MAX_UPLOAD_MB=100
 ENV SPLIT_CROSS_ATTENTION=false
+ENV XDG_CACHE_HOME=/opt/content/cache
 ENV VRAM=auto
 EXPOSE 8188
 LABEL org.opencontainers.image.authors=joepitt91
@@ -71,11 +73,12 @@ LABEL org.opencontainers.image.title="ComfyUI"
 LABEL org.opencontainers.image.url=https://github.com/joepitt91/comfyui-docker
 STOPSIGNAL SIGINT
 WORKDIR /opt/ComfyUI
-RUN mkdir -p /etc/ssl/private/ /opt/content /opt/ComfyUI /opt/ComfyUI.venv /tmp/comfyui && \
+RUN apt update && apt install git -yq && rm -rf /var/lib/apt/list/* &&\
+    mkdir -p /etc/ssl/private/ /opt/content /opt/ComfyUI /opt/ComfyUI.venv /tmp/comfyui /opt/ComfyUI/user && \
     chown -R nobody:nogroup /etc/ssl/private/ /opt/content /opt/ComfyUI /opt/ComfyUI.venv /tmp/comfyui
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 USER nobody
-VOLUME /etc/ssl/private/ /opt/content /tmp/comfyui
+VOLUME /etc/ssl/private/ /opt/ComfyUI/user /opt/content /tmp/comfyui
 ARG COMFYUI_VERSION=v0.0.0 TORCH_VERSION=latest
 LABEL org.opencontainers.image.version=${COMFYUI_VERSION}
 ENV COMFYUI_VERSION=${COMFYUI_VERSION} TORCH_VERSION=${TORCH_VERSION}

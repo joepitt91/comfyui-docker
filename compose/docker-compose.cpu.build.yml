@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 Joe Pitt
+# SPDX-FileCopyrightText: 2025-2026 Joe Pitt
 #
 # SPDX-License-Identifier: GPL-3.0-only
 
@@ -19,11 +19,14 @@ services:
         required: false
     ports:
       - 127.0.0.1:8188:8188
+    tmpfs:
+      - /tmp/comfyui:mode=775,uid=65534,gid=65534
+
     volumes:
       - tls:/etc/ssl/private/:ro
       - content:/opt/content
-      - tmp:/tmp/comfyui
+      - user_db:/opt/ComfyUI/user
 volumes:
   content: null
   tls: null
-  tmp: null
+  user_db: null

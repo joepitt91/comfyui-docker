@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 Joe Pitt
+# SPDX-FileCopyrightText: 2025-2026 Joe Pitt
 #
 # SPDX-License-Identifier: GPL-3.0-only
 
@@ -33,7 +33,7 @@ jobs:
 
       - name: Get Latest ComfyUI Version
         id: comfyui
-        uses: joepitt91/action-version-from-github-tag@v1
+        uses: joepitt91/action-version-from-github-tag@v2
         with:
           token: ${{ secrets.PUBLIC_READ_TOKEN }}
           owner: comfyanonymous
@@ -45,7 +45,7 @@ jobs:
         with:
           version: ${{ steps.comfyui.outputs.version }}
 
-      - name: Get Current Version from PyPI Module
+      - name: Get Latest Torch from PyPI Module
         id: torch
         uses: joepitt91/action-version-from-pypi@v1
         with:
@@ -60,10 +60,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # NOTE: AMD must be built at runtime due to dependencies exceeding Docker's layer size limit
         target: [ cpu, intel, nvidia ]
     steps:
       - name: Free Up Disk Space
         uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
 
       - name: Image Information
         run: echo "Building image of ComfyUI ${{ needs.dependencies.outputs.comfyui_version }} with torch v${{ needs.dependencies.outputs.torch_version }} for ${{ matrix.target }} architectures from python:3.12-slim with digest ${{ needs.dependencies.outputs.python_digest }}"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# SPDX-FileCopyrightText: 2025 Joe Pitt
+# SPDX-FileCopyrightText: 2025-2026 Joe Pitt
 #
 # SPDX-License-Identifier: GPL-3.0-only
 
@@ -21,7 +21,7 @@ if [ -z "$(ls -A /opt/content/models/configs/)" ]; then
     cp -r /opt/ComfyUI/models/configs/* /opt/content/models/configs/
 fi
 
-STARTUP_ARGS=("--listen" "0.0.0.0" "--enable-cors-header" "${CORS_HEADER:-*}" "--max-upload-size"
+STARTUP_ARGS=("--listen" "${LISTEN_ADDR:-0.0.0.0}" "--enable-cors-header" "${CORS_HEADER:-*}" "--max-upload-size"
     "${MAX_UPLOAD_MB:-100}" "--base-directory" "/opt/content" "--temp-directory" "/tmp/comfyui" "--disable-auto-launch")
 
 if [ -f /etc/ssl/private/key.pem ] && [ -f /etc/ssl/private/cert.pem ]; then
