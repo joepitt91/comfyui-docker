@@ -87,8 +87,8 @@ jobs:
           build-args: |
             COMFYUI_VERSION=${{ needs.dependencies.outputs.comfyui_version }}
             TORCH_VERSION=${{ needs.dependencies.outputs.torch_version }}
-          cache-from: type=registry,ref=ghcr.io/joepitt91/comfyui-dev:${{ matrix.target }}-buildcache
-          cache-to: type=registry,ref=ghcr.io/joepitt91/comfyui-dev:${{ matrix.target }}-buildcache,mode=max
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           provenance: true
           pull: true
           push: true
