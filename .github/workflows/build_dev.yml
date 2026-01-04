@@ -52,6 +52,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # NOTE: AMD must be built at runtime due to dependencies exceeding Docker's layer size limit
         target: [ cpu, intel, nvidia ]
     steps:
       - name: Free Up Disk Space
