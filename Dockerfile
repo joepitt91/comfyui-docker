@@ -73,7 +73,8 @@ LABEL org.opencontainers.image.title="ComfyUI"
 LABEL org.opencontainers.image.url=https://github.com/joepitt91/comfyui-docker
 STOPSIGNAL SIGINT
 WORKDIR /opt/ComfyUI
-RUN mkdir -p /etc/ssl/private/ /opt/content /opt/ComfyUI /opt/ComfyUI.venv /tmp/comfyui /opt/ComfyUI/user && \
+RUN apt update && apt install git -yq && rm -rf /var/lib/apt/list/* &&\
+    mkdir -p /etc/ssl/private/ /opt/content /opt/ComfyUI /opt/ComfyUI.venv /tmp/comfyui /opt/ComfyUI/user && \
     chown -R nobody:nogroup /etc/ssl/private/ /opt/content /opt/ComfyUI /opt/ComfyUI.venv /tmp/comfyui
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 USER nobody
