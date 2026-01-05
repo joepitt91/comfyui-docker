@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       version: 
-        description: The ComfyUI version to build (with preceding "v")
+        description: The ComfyUI version to build (without preceding "v")
         required: true
         type: string
       tag_level:
@@ -88,7 +88,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           build-args: |
-            COMFYUI_VERSION=${{ inputs.version }}
+            COMFYUI_VERSION=v${{ inputs.version }}
             TORCH_VERSION=${{ needs.dependencies.outputs.torch_version }}
           provenance: true
           pull: true
@@ -103,7 +103,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           build-args: |
-            COMFYUI_VERSION=${{ inputs.version }}
+            COMFYUI_VERSION=v${{ inputs.version }}
             TORCH_VERSION=${{ needs.dependencies.outputs.torch_version }}
           cache-from: type=registry,ref=ghcr.io/joepitt91/comfyui-dev:${{ matrix.target }}-buildcache
           cache-to: type=registry,ref=ghcr.io/joepitt91/comfyui-dev:${{ matrix.target }}-buildcache,mode=max
@@ -121,7 +121,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           build-args: |
-            COMFYUI_VERSION=${{ inputs.version }}
+            COMFYUI_VERSION=v${{ inputs.version }}
             TORCH_VERSION=${{ needs.dependencies.outputs.torch_version }}
           provenance: true
           pull: true
