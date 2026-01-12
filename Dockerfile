@@ -27,7 +27,7 @@ FROM python:3.12-slim AS intel_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
-    pip install --no-cache-dir --quiet --pre torch==2.8.0 torchvision torchaudio==2.8.0 intel-extension-for-pytorch==2.8.0
+    pip install --no-cache-dir --quiet torch torchvision torchaudio --index-url https://download.pytorch.org/whl/xpu
 
 FROM python:3.12-slim AS nvidia_torch
 RUN python3 -m venv /opt/ComfyUI.venv
@@ -91,6 +91,12 @@ COPY --chown=nobody:nogroup --from=base /opt /opt
 
 FROM final_base AS intel
 COPY --chown=nobody:nogroup --from=intel_flatten /opt /opt
+USER root
+RUN sed -i 's/main/main non-free-firmware/g' /etc/apt/sources.list.d/debian.sources &&\
+    apt-get -yq update &&\
+    apt-get -yq install firmware-intel-graphics intel-gpu-tools &&\
+    rm -rf /var/lib/lists/*
+USER nobody
 
 FROM final_base AS nvidia
 COPY --chown=nobody:nogroup --from=nvidia_flatten /opt /opt
