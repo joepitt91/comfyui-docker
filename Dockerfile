@@ -27,7 +27,7 @@ FROM python:3.12-slim AS intel_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
-    pip install --no-cache-dir --quiet --pre torch==2.8.0+xpu torchvision==2.8.0+xpu torchaudio==2.8.0+xpu intel-extension-for-pytorch --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/bmg/us/
+    pip install --no-cache-dir --quiet --pre torch==2.8.0 torchvision torchaudio==2.8.0 intel-extension-for-pytorch==2.8.0
 
 FROM python:3.12-slim AS nvidia_torch
 RUN python3 -m venv /opt/ComfyUI.venv
