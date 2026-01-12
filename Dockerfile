@@ -27,7 +27,7 @@ FROM python:3.12-slim AS intel_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
-    pip install --no-cache-dir --quiet --pre torch torchvision torchaudio intel-extension-for-pytorch --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/bmg/us/
+    pip install --no-cache-dir --quiet --pre torch==2.8.0+xpu torchvision==2.8.0+xpu torchaudio==2.8.0+xpu intel-extension-for-pytorch --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/bmg/us/
 
 FROM python:3.12-slim AS nvidia_torch
 RUN python3 -m venv /opt/ComfyUI.venv
@@ -91,6 +91,18 @@ COPY --chown=nobody:nogroup --from=base /opt /opt
 
 FROM final_base AS intel
 COPY --chown=nobody:nogroup --from=intel_flatten /opt /opt
+RUN apt-get update && apt-get -yq install ocl-icd-libopencl1 wget && rm -rf /var/lib/apt/lists/* &&\
+    mkdir /opt/icr/ &&\
+    cd .opt/icr &&\
+    wget https://github.com/intel/intel-graphics-compiler/releases/download/v2.22.2/intel-igc-core-2_2.22.2+20121_amd64.deb &&\
+    wget https://github.com/intel/intel-graphics-compiler/releases/download/v2.22.2/intel-igc-opencl-2_2.22.2+20121_amd64.deb &&\
+    wget https://github.com/intel/compute-runtime/releases/download/25.44.36015.8/intel-ocloc_25.44.36015.8-0_amd64.deb &&\
+    wget https://github.com/intel/compute-runtime/releases/download/25.44.36015.8/intel-opencl-icd_25.44.36015.8-0_amd64.deb &&\
+    wget https://github.com/intel/compute-runtime/releases/download/25.44.36015.8/libigdgmm12_22.8.2_amd64.deb &&\
+    wget https://github.com/intel/compute-runtime/releases/download/25.44.36015.8/libze-intel-gpu1_25.44.36015.8-0_amd64.deb &&\
+    dpkg -i *.deb &&\
+    cd ../ &&\
+    rm -rf icr
 
 FROM final_base AS nvidia
 COPY --chown=nobody:nogroup --from=nvidia_flatten /opt /opt
