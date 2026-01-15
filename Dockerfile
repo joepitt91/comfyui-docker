@@ -96,7 +96,7 @@ COPY --chown=nobody:nogroup --from=intel_flatten /opt /opt
 USER root
 RUN sed -i 's/main/main contrib non-free non-free-firmware/g' /etc/apt/sources.list.d/debian.sources &&\
     apt-get -yq update &&\
-    apt-get -yq install clinfo firmware-intel-graphics intel-gpu-tools intel-opencl-icd libze-dev libze-intel-gpu1 libze1 &&\
+    apt-get -yq install clinfo firmware-intel-graphics intel-gpu-tools libze-dev libze1 &&\
     echo -e "Types: deb\nURIs: http://deb.debian.org/debian\nSuites: sid\nComponents: main contrib non-free non-free-firmware\nSigned-By: /usr/share/keyrings/debian-archive-keyring.gpg" > /etc/apt/sources.list.d/sid.sources &&\
     apt-get -yq update &&\
     apt-get -yq install intel-opencl-icd libze-intel-gpu1 &&\
