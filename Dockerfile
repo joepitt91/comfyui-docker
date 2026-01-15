@@ -90,11 +90,13 @@ ENV CPU_ONLY=true
 COPY --chown=nobody:nogroup --from=base /opt /opt
 
 FROM final_base AS intel
+ENV  LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu \
+    SYCL_UR_USE_LEVEL_ZERO_V2=1 ONEAPI_DEVICE_SELECTOR=level_zero:0
 COPY --chown=nobody:nogroup --from=intel_flatten /opt /opt
 USER root
-RUN sed -i 's/main/main non-free-firmware/g' /etc/apt/sources.list.d/debian.sources &&\
+RUN sed -i 's/main/main contrib non-free non-free-firmware/g' /etc/apt/sources.list.d/debian.sources &&\
     apt-get -yq update &&\
-    apt-get -yq install firmware-intel-graphics intel-gpu-tools &&\
+    apt-get -yq install clinfo firmware-intel-graphics intel-gpu-tools intel-opencl-icd libze-dev libze-intel-gpu1 libze1 &&\
     rm -rf /var/lib/lists/*
 USER nobody
 

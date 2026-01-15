@@ -5,6 +5,8 @@
 ---
 services:
   comfyui:
+    device_cgroup_rules:
+     - 'c 189:* rmw'
     devices:
       - /dev/dri:/dev/dri
     env_file:
@@ -15,7 +17,7 @@ services:
       - 127.0.0.1:8188:8188
     tmpfs:
       - /tmp/comfyui:mode=775,uid=65534,gid=65534
-
+    tty: true
     volumes:
       - tls:/etc/ssl/private/:ro
       - content:/opt/content
