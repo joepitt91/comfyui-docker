@@ -97,7 +97,11 @@ USER root
 RUN sed -i 's/main/main contrib non-free non-free-firmware/g' /etc/apt/sources.list.d/debian.sources &&\
     apt-get -yq update &&\
     apt-get -yq install clinfo firmware-intel-graphics intel-gpu-tools libze-dev libze1 &&\
-    echo -e "Types: deb\nURIs: http://deb.debian.org/debian\nSuites: sid\nComponents: main contrib non-free non-free-firmware\nSigned-By: /usr/share/keyrings/debian-archive-keyring.gpg" > /etc/apt/sources.list.d/sid.sources &&\
+    echo "Types: deb" >/etc/apt/sources.list.d/sid.sources &&\
+    echo "URIs: http://deb.debian.org/debian" >>/etc/apt/sources.list.d/sid.sources &&\
+    echo "Suites: sid"  >>/etc/apt/sources.list.d/sid.sources &&\
+    echo "Components: main contrib non-free non-free-firmware"  >>/etc/apt/sources.list.d/sid.sources &&\
+    echo "Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg"  >>/etc/apt/sources.list.d/sid.sources &&\
     apt-get -yq update &&\
     apt-get -yq install intel-opencl-icd libze-intel-gpu1 &&\
     rm -rf /var/lib/lists/*
