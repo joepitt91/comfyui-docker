@@ -5,8 +5,8 @@
 name: Build Development Images
 on:
   push:
-    branches: 
-      - "*"
+    branches-ignore: 
+      - "main"
   workflow_dispatch:
 permissions:
   contents: read
