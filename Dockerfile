@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 # Phase 1 - Get ComfyUI and platform-specific torch versions
-
-FROM python:3.12-slim AS base
+ARG PYTHON_VERSION=3.14
+FROM python:${PYTHON_VERSION}-slim AS base
 RUN python3 -m venv /opt/ComfyUI.venv
 RUN apt update && apt install git -yq
 WORKDIR /opt
@@ -16,20 +16,23 @@ RUN rm -rf .git
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && pip install --no-cache-dir --quiet -r requirements.txt
 
-FROM python:3.12-slim AS amd_torch
+ARG PYTHON_VERSION=3.14
+FROM python:${PYTHON_VERSION}-slim AS amd_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
     pip install --no-cache-dir --quiet torch torchvision torchaudio \
         --index-url https://download.pytorch.org/whl/rocm6.2.4
 
-FROM python:3.12-slim AS intel_torch
+ARG PYTHON_VERSION=3.14
+FROM python:${PYTHON_VERSION}-slim AS intel_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
     pip install --no-cache-dir --quiet torch torchvision torchaudio --index-url https://download.pytorch.org/whl/xpu
 
-FROM python:3.12-slim AS nvidia_torch
+ARG PYTHON_VERSION=3.14
+FROM python:${PYTHON_VERSION}-slim AS nvidia_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
@@ -38,21 +41,26 @@ RUN . /opt/ComfyUI.venv/bin/activate && \
 
 # Phrase 2 - Combine dependencies
 
-FROM python:3.12-slim AS amd_flatten
+ARG PYTHON_VERSION=3.14
+FROM python:${PYTHON_VERSION}-slim AS amd_flatten
 COPY --chown=nobody:nogroup --from=base /opt /opt
 COPY --chown=nobody:nogroup --from=amd_torch /opt /opt
 
-FROM python:3.12-slim AS intel_flatten
+ARG PYTHON_VERSION=3.14
+FROM python:${PYTHON_VERSION}-slim AS intel_flatten
 COPY --chown=nobody:nogroup --from=base /opt /opt
 COPY --chown=nobody:nogroup --from=intel_torch /opt /opt
 
-FROM python:3.12-slim AS nvidia_flatten
+ARG PYTHON_VERSION=3.14
+FROM python:${PYTHON_VERSION}-slim AS nvidia_flatten
 COPY --chown=nobody:nogroup --from=base /opt /opt
 COPY --chown=nobody:nogroup --from=nvidia_torch /opt /opt
 
 # Phase 3 - Build final images
 
-FROM python:3.12-slim AS final_base
+ARG PYTHON_VERSION=3.14
+FROM python:${PYTHON_VERSION}-slim AS final_base
+ARG PYTHON_VERSION=3.14
 ENTRYPOINT ["/bin/bash", "/usr/local/bin/entrypoint.sh"]
 ENV CORS_HEADER=*
 ENV CPU_ONLY=false
@@ -64,7 +72,7 @@ ENV XDG_CACHE_HOME=/opt/content/cache
 ENV VRAM=auto
 EXPOSE 8188
 LABEL org.opencontainers.image.authors=joepitt91
-LABEL org.opencontainers.image.base.name=docker.io/_/python:3.12-slim
+LABEL org.opencontainers.image.base.name=docker.io/_/python:${PYTHON_VERSION}-slim
 LABEL org.opencontainers.image.description="The most powerful and modular diffusion model GUI, api and backend with a graph/nodes interface."
 LABEL org.opencontainers.image.documentation=https://github.com/joepitt91/comfyui-docker
 LABEL org.opencontainers.image.source=https://github.com/joepitt91/comfyui-docker
