@@ -6,7 +6,7 @@ name: Build Development Images
 on:
   push:
     branches-ignore: 
-      - "main"
+      - main
   workflow_dispatch:
 permissions:
   contents: read
@@ -63,7 +63,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and Push Image for ${{ matrix.target }}
+      - name: Build and Push Image for ${{ matrix.target }} on Python ${{ matrix.python }}
         uses: docker/build-push-action@v6
         with:
           build-args: |
