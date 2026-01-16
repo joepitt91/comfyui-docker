@@ -27,8 +27,7 @@ FROM python:3.12-slim AS intel_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
-    pip install --no-cache-dir --quiet --pre torch torchvision torchaudio \
-        --index-url https://download.pytorch.org/whl/nightly/xpu
+    pip install --no-cache-dir --quiet torch torchvision torchaudio --index-url https://download.pytorch.org/whl/xpu
 
 FROM python:3.12-slim AS nvidia_torch
 RUN python3 -m venv /opt/ComfyUI.venv
@@ -91,7 +90,22 @@ ENV CPU_ONLY=true
 COPY --chown=nobody:nogroup --from=base /opt /opt
 
 FROM final_base AS intel
+ENV  LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu \
+    SYCL_UR_USE_LEVEL_ZERO_V2=1 ONEAPI_DEVICE_SELECTOR=level_zero:0
 COPY --chown=nobody:nogroup --from=intel_flatten /opt /opt
+USER root
+RUN sed -i 's/main/main contrib non-free non-free-firmware/g' /etc/apt/sources.list.d/debian.sources &&\
+    apt-get -yq update &&\
+    apt-get -yq install clinfo firmware-intel-graphics intel-gpu-tools libze-dev libze1 &&\
+    echo "Types: deb" >/etc/apt/sources.list.d/sid.sources &&\
+    echo "URIs: http://deb.debian.org/debian" >>/etc/apt/sources.list.d/sid.sources &&\
+    echo "Suites: sid"  >>/etc/apt/sources.list.d/sid.sources &&\
+    echo "Components: main contrib non-free non-free-firmware"  >>/etc/apt/sources.list.d/sid.sources &&\
+    echo "Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg"  >>/etc/apt/sources.list.d/sid.sources &&\
+    apt-get -yq update &&\
+    apt-get -yq install intel-opencl-icd libze-intel-gpu1 &&\
+    rm -rf /var/lib/lists/*
+USER nobody
 
 FROM final_base AS nvidia
 COPY --chown=nobody:nogroup --from=nvidia_flatten /opt /opt
