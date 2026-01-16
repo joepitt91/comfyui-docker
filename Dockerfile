@@ -21,8 +21,7 @@ FROM python:${PYTHON_VERSION}-slim AS amd_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
-    pip install --no-cache-dir --quiet torch torchvision torchaudio \
-        --index-url https://download.pytorch.org/whl/rocm6.2.4
+    pip install --no-cache-dir --quiet torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.4
 
 ARG PYTHON_VERSION=3.13
 FROM python:${PYTHON_VERSION}-slim AS intel_torch
@@ -36,8 +35,7 @@ FROM python:${PYTHON_VERSION}-slim AS nvidia_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
-    pip install --no-cache-dir --quiet torch torchvision torchaudio \
-        --extra-index-url https://download.pytorch.org/whl/cu128
+    pip install --no-cache-dir --quiet torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu130
 
 # Phrase 2 - Combine dependencies
 
