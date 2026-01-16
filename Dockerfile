@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 # Phase 1 - Get ComfyUI and platform-specific torch versions
-ARG PYTHON_VERSION=3.14
+ARG PYTHON_VERSION=3.13
 FROM python:${PYTHON_VERSION}-slim AS base
 RUN python3 -m venv /opt/ComfyUI.venv
 RUN apt update && apt install git -yq
@@ -16,7 +16,7 @@ RUN rm -rf .git
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && pip install --no-cache-dir --quiet -r requirements.txt
 
-ARG PYTHON_VERSION=3.14
+ARG PYTHON_VERSION=3.13
 FROM python:${PYTHON_VERSION}-slim AS amd_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
@@ -24,14 +24,14 @@ RUN . /opt/ComfyUI.venv/bin/activate && \
     pip install --no-cache-dir --quiet torch torchvision torchaudio \
         --index-url https://download.pytorch.org/whl/rocm6.2.4
 
-ARG PYTHON_VERSION=3.14
+ARG PYTHON_VERSION=3.13
 FROM python:${PYTHON_VERSION}-slim AS intel_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
     pip install --no-cache-dir --quiet torch torchvision torchaudio --index-url https://download.pytorch.org/whl/xpu
 
-ARG PYTHON_VERSION=3.14
+ARG PYTHON_VERSION=3.13
 FROM python:${PYTHON_VERSION}-slim AS nvidia_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
@@ -41,26 +41,26 @@ RUN . /opt/ComfyUI.venv/bin/activate && \
 
 # Phrase 2 - Combine dependencies
 
-ARG PYTHON_VERSION=3.14
+ARG PYTHON_VERSION=3.13
 FROM python:${PYTHON_VERSION}-slim AS amd_flatten
 COPY --chown=nobody:nogroup --from=base /opt /opt
 COPY --chown=nobody:nogroup --from=amd_torch /opt /opt
 
-ARG PYTHON_VERSION=3.14
+ARG PYTHON_VERSION=3.13
 FROM python:${PYTHON_VERSION}-slim AS intel_flatten
 COPY --chown=nobody:nogroup --from=base /opt /opt
 COPY --chown=nobody:nogroup --from=intel_torch /opt /opt
 
-ARG PYTHON_VERSION=3.14
+ARG PYTHON_VERSION=3.13
 FROM python:${PYTHON_VERSION}-slim AS nvidia_flatten
 COPY --chown=nobody:nogroup --from=base /opt /opt
 COPY --chown=nobody:nogroup --from=nvidia_torch /opt /opt
 
 # Phase 3 - Build final images
 
-ARG PYTHON_VERSION=3.14
+ARG PYTHON_VERSION=3.13
 FROM python:${PYTHON_VERSION}-slim AS final_base
-ARG PYTHON_VERSION=3.14
+ARG PYTHON_VERSION=3.13
 ENTRYPOINT ["/bin/bash", "/usr/local/bin/entrypoint.sh"]
 ENV CORS_HEADER=*
 ENV CPU_ONLY=false
