@@ -5,8 +5,8 @@
 name: Build Development Images
 on:
   push:
-    branches: 
-      - "*"
+    branches-ignore:
+      - main
   workflow_dispatch:
 permissions:
   contents: read
@@ -63,17 +63,17 @@ jobs:
         run: echo "Building image of ComfyUI ${{ needs.dependencies.outputs.comfyui_version }} with torch v${{ needs.dependencies.outputs.torch_version }} for ${{ matrix.target }} architectures from python:3.12-slim with digest ${{ needs.dependencies.outputs.python_digest }}"
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4    
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Build and Push Image for ${{ matrix.target }}
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           build-args: |
             COMFYUI_VERSION=${{ needs.dependencies.outputs.comfyui_version }}
