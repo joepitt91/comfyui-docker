@@ -82,7 +82,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build and Push Image for ${{ matrix.target }}
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           build-args: |
             COMFYUI_VERSION=${{ needs.dependencies.outputs.comfyui_version }}

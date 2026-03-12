@@ -85,7 +85,7 @@ jobs:
 
       - name: Build and Push Image for ${{ matrix.target }} (patch)
         if: inputs.tag_level == 'patch'
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           build-args: |
             COMFYUI_VERSION=v${{ inputs.version }}
@@ -100,7 +100,7 @@ jobs:
 
       - name: Build and Push Image for ${{ matrix.target }} (minor)
         if: inputs.tag_level == 'minor'
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           build-args: |
             COMFYUI_VERSION=v${{ inputs.version }}
@@ -118,7 +118,7 @@ jobs:
 
       - name: Build and Push Image for ${{ matrix.target }} (major)
         if: inputs.tag_level == 'major'
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           build-args: |
             COMFYUI_VERSION=v${{ inputs.version }}
