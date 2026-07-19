@@ -34,7 +34,7 @@ RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
     pip install --no-cache-dir --quiet torch torchvision torchaudio \
-        --extra-index-url https://download.pytorch.org/whl/cu128
+        --index-url https://download.pytorch.org/whl/cu128
 
 # Phrase 2 - Combine dependencies
 
