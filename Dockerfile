@@ -34,7 +34,7 @@ RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
     pip install --no-cache-dir --quiet torch torchvision torchaudio \
-        --extra-index-url https://download.pytorch.org/whl/cu128
+        --index-url https://download.pytorch.org/whl/cu128
 
 # Phrase 2 - Combine dependencies
 
@@ -72,7 +72,8 @@ LABEL org.opencontainers.image.title="ComfyUI"
 LABEL org.opencontainers.image.url=https://github.com/joepitt91/comfyui-docker
 STOPSIGNAL SIGINT
 WORKDIR /opt/ComfyUI
-RUN apt update && apt install git -yq && rm -rf /var/lib/apt/list/* &&\
+RUN sed -i 's/Components: main/Components: main non-free/gm' /etc/apt/sources.list.d/debian.sources &&\
+    apt update && apt install git libcudart12 -yq && rm -rf /var/lib/apt/list/* &&\
     mkdir -p /etc/ssl/private/ /opt/content /opt/ComfyUI /opt/ComfyUI.venv /tmp/comfyui /opt/ComfyUI/user && \
     chown -R nobody:nogroup /etc/ssl/private/ /opt/content /opt/ComfyUI /opt/ComfyUI.venv /tmp/comfyui
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
