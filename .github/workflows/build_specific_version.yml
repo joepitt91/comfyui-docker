@@ -33,14 +33,14 @@ jobs:
       minor_tag: ${{ steps.image_tags.outputs.minor_tag}}
       major_tag: ${{ steps.image_tags.outputs.major_tag}}
     steps:
-      - name: Get Current Digest for Python 3.12 image
+      - name: Get Current Digest for Python 3.13 image
         id: digest
         uses: joepitt91/action-digest-from-dockerhub-image@v1
         with:
           dockerhub_username: ${{ secrets.DOCKER_USER }}
           dockerhub_token: ${{ secrets.DOCKER_PASSWORD }}
           repository: python
-          tag: 3.12-slim
+          tag: 3.13-slim
 
       - name: Convert Version to Tags
         id: image_tags
@@ -71,7 +71,7 @@ jobs:
           tool-cache: true
 
       - name: Image Information
-        run: echo "Building image of ComfyUI ${{ inputs.version }} with torch v${{ needs.dependencies.outputs.torch_version }} for ${{ matrix.target }} architectures from python:3.12-slim with digest ${{ needs.dependencies.outputs.python_digest }}"
+        run: echo "Building image of ComfyUI ${{ inputs.version }} with torch v${{ needs.dependencies.outputs.torch_version }} for ${{ matrix.target }} architectures from python:3.13-slim with digest ${{ needs.dependencies.outputs.python_digest }}"
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v4
