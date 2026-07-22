@@ -16,26 +16,28 @@ RUN rm -rf .git
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate &&\
     pip install --no-cache-dir --quiet -r requirements.txt &&\
-    pip install --no-cache-dir --quiet -r manager_requirements.txt &&\
-    pip install --no-cache-dir --quiet flash-attn matrix-nio PyOpenGL PyOpenGL_accelerate sageattention
+    pip install --no-cache-dir --quiet -r manager_requirements.txt
 
 FROM python:3.13-slim AS amd_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
-    pip install --no-cache-dir --quiet torch torchaudio torchvision --index-url https://download.pytorch.org/whl/rocm7.2
+    pip install --no-cache-dir --quiet torch torchaudio torchvision --index-url https://download.pytorch.org/whl/rocm7.2 &&\
+    pip install --no-cache-dir --quiet flash-attn matrix-nio PyOpenGL PyOpenGL_accelerate sageattention
 
 FROM python:3.13-slim AS intel_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
-    pip install --no-cache-dir --quiet torch torchaudio torchvision --index-url https://download.pytorch.org/whl/xpu
+    pip install --no-cache-dir --quiet torch torchaudio torchvision --index-url https://download.pytorch.org/whl/xpu &&\
+    pip install --no-cache-dir --quiet flash-attn matrix-nio PyOpenGL PyOpenGL_accelerate sageattention
 
 FROM python:3.13-slim AS nvidia_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
-    pip install --no-cache-dir --quiet torch torchaudio torchvision
+    pip install --no-cache-dir --quiet torch torchaudio torchvision &&\
+    pip install --no-cache-dir --quiet flash-attn matrix-nio PyOpenGL PyOpenGL_accelerate sageattention
 
 # Phrase 2 - Combine dependencies
 
