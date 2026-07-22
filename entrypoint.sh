@@ -53,7 +53,7 @@ fi
 if [ "${FORCE_UPCAST_ATTENTION}" == "true" ];then
     STARTUP_ARGS+=("--force-upcast-attention")
 fi
-if [ "${DONT_UPCAST_ATTENTION}" == "false" ];then
+if [ "${DONT_UPCAST_ATTENTION}" == "true" ];then
     STARTUP_ARGS+=("--dont-upcast-attention")
 fi
 
