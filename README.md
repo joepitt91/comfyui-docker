@@ -152,15 +152,53 @@ ComfyUI can be customised using the following environment variables, these can b
 creating a file named `comfyui.env` with one variable per line in the format `VARIABLE_NAME=VALUE`,
 only variables being changed from their Default need to be present in the file.
 
+#### Network & Server Flags
+
 | Variable | Purpose | Default |
 | -------- | ------- | ------- |
 | `CORS_HEADER` | Set the Cross-Origin Resource Sharing (CORS) header to restrict access from other domains. Can be set to either `*` for unrestricted or a URL to limit CORS requests to that domain and protocol. | `*` |
-| `CPU_ONLY` | Run on the CPU only - this will be slow and should be used with the `cpu` tag. | ` false` |
-| `GPU_ONLY` | Run all operations on the GPU only. | ` false` |
 | `LISTEN_ADDR` | What address, within the container, ComfyUI should bind to (e.g. `0.0.0.0,::` for dual-stack environments). | `0.0.0.0` |
 | `MAX_UPLOAD_MB` | The maximum upload size in megabytes - when running behind a reverse proxy ensure to set this there too. | `100` |
-| `SPLIT_CROSS_ATTENTION` | Enable Split Cross Attention - can help with some memory and speed issues | `false ` |
-| `VRAM` | The VRAM profile to run with, can be `auto`, `high`, `normal`, `low` or `no`. | `auto` |
+
+#### Attention Flags
+
+| Variable | Purpose | Default |
+| -------- | ------- | ------- |
+| `SPLIT_CROSS_ATTENTION` | Use split cross attention optimization. | `false ` |
+| `QUAD_CROSS_ATTENTION` | Use sub-quadratic cross attention optimization. | `false` |
+| `PYTORCH_CROSS_ATTENTION` | Use PyTorch 2.0 cross attention. | `false` |
+| `SAGE_ATTENTION` | Use Sage attention. | `false` |
+| `FLASH_ATTENTION` | Use FlashAttention. | `false` |
+| `XFORMERS` | Use xformers. | `true` |
+| `FORCE_UPCAST_ATTENTION` | Force attention upcasting. | `false` |
+| `DONT_UPCAST_ATTENTION` | Disable all attention upcasting. | `false` |
+
+#### VRAM & Memory Flags
+
+| Variable | Purpose | Default |
+| -------- | ------- | ------- |
+| `CPU_ONLY` | Run on the CPU only - this will be slow and should be used with the `cpu` tag. | ` false` |
+| `GPU_ONLY` | Run all operations on the GPU only. | ` false` |
+| `VRAM` | The VRAM profile to run with, can be `auto`, `high`, `low` or `no`. | `auto` |
+
+#### Performance & Debugging Flags
+
+| Variable | Purpose | Default |
+| -------- | ------- | ------- |
+| `FAST` | Enable experimental optimizations that may affect quality or stability. `all` enables all available options or give the name of one. | `none` |
+
+#### ComfyUI Manager Flags
+
+| Variable | Purpose | Default |
+| -------- | ------- | ------- |
+| `ENABLE_MANAGER` | Enable ComfyUI-Manager. | `false` |
+
+#### Logging & Misc Flags
+
+| Variable | Purpose | Default |
+| -------- | ------- | ------- |
+| `LOG_VERBOSITY` | Logging level. Choices: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`. | `INFO` |
+| `MULTI_USER` | Enable per-user storage. | `false` |
 
 ### Volumes
 

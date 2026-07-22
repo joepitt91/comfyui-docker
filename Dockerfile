@@ -14,7 +14,10 @@ RUN git clone --depth 1 --branch ${COMFYUI_VERSION} https://github.com/comfyanon
 WORKDIR /opt/ComfyUI
 RUN rm -rf .git
 ARG TORCH_VERSION=latest
-RUN . /opt/ComfyUI.venv/bin/activate && pip install --no-cache-dir --quiet -r requirements.txt
+RUN . /opt/ComfyUI.venv/bin/activate &&\
+    pip install --no-cache-dir --quiet -r requirements.txt &&\
+    pip install --no-cache-dir --quiet -r manager_requirements.txt &&\
+    pip install --no-cache-dir --quiet PyOpenGL PyOpenGL_accelerate
 
 FROM python:3.13-slim AS amd_torch
 RUN python3 -m venv /opt/ComfyUI.venv
@@ -54,14 +57,38 @@ COPY --chown=nobody:nogroup --from=nvidia_torch /opt /opt
 
 FROM python:3.13-slim AS final_base
 ENTRYPOINT ["/bin/bash", "/usr/local/bin/entrypoint.sh"]
-ENV CORS_HEADER=*
-ENV CPU_ONLY=false
-ENV GPU_ONLY=false
+
+# Network & Server Flags
 ENV LISTEN_ADDR=0.0.0.0
+ENV CORS_HEADER=*
 ENV MAX_UPLOAD_MB=100
+
+# Attention Flags
 ENV SPLIT_CROSS_ATTENTION=false
-ENV XDG_CACHE_HOME=/opt/content/cache
+ENV QUAD_CROSS_ATTENTION=false
+ENV PYTORCH_CROSS_ATTENTION=false
+ENV SAGE_ATTENTION=false
+ENV FLASH_ATTENTION=false
+ENV XFORMERS=true
+ENV FORCE_UPCAST_ATTENTION=false
+ENV DONT_UPCAST_ATTENTION=false
+
+# VRAM & Memory Flags
+ENV GPU_ONLY=false
 ENV VRAM=auto
+ENV CPU_ONLY=false
+
+# Performance & Debugging Flags
+ENV FAST=none
+
+# ComfyUI Manager Flags
+ENV ENABLE_MANAGER=false
+
+# Logging & Misc Flags
+ENV LOG_VERBOSITY=INFO
+ENV MULTI_USER=false
+
+ENV XDG_CACHE_HOME=/opt/content/cache
 EXPOSE 8188
 LABEL org.opencontainers.image.authors=joepitt91
 LABEL org.opencontainers.image.base.name=docker.io/_/python:3.13-slim

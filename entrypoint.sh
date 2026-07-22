@@ -29,16 +29,42 @@ if [ -f /etc/ssl/private/key.pem ] && [ -f /etc/ssl/private/cert.pem ]; then
         "--tls-certfile" "/etc/ssl/private/cert.pem")
 fi
 
+
+
+# Attention Flags
+if [ "${SPLIT_CROSS_ATTENTION}" == "true" ];then
+    STARTUP_ARGS+=("--use-split-cross-attention")
+fi
+if [ "${QUAD_CROSS_ATTENTION}" == "true" ];then
+    STARTUP_ARGS+=("--use-quad-cross-attention")
+fi
+if [ "${PYTORCH_CROSS_ATTENTION}" == "true" ];then
+    STARTUP_ARGS+=("--use-pytorch-cross-attention")
+fi
+if [ "${SAGE_ATTENTION}" == "true" ];then
+    STARTUP_ARGS+=("--use-sage-attention")
+fi
+if [ "${FLASH_ATTENTION}" == "true" ];then
+    STARTUP_ARGS+=("--use-flash-attention")
+fi
+if [ "${XFORMERS}" == "false" ];then
+    STARTUP_ARGS+=("--disable-xformers")
+fi
+if [ "${FORCE_UPCAST_ATTENTION}" == "true" ];then
+    STARTUP_ARGS+=("--force-upcast-attention")
+fi
+if [ "${DONT_UPCAST_ATTENTION}" == "false" ];then
+    STARTUP_ARGS+=("--dont-upcast-attention")
+fi
+
+# VRAM & Memory Flags
 if [ "${GPU_ONLY:-false}" == "true" ]; then
     STARTUP_ARGS+=(--gpu-only)
 elif [ "${CPU_ONLY:-false}" == "true" ]; then
     STARTUP_ARGS+=("--cpu")
-fi
-if [ "${VRAM:-auto}" != "auto" ]; then
+elif [ "${VRAM:-auto}" != "auto" ]; then
     if [ "${VRAM:-auto}" == "high" ]; then
         STARTUP_ARGS+=(--highvram)
-    elif [ "${VRAM:-auto}" == "normal" ]; then
-        STARTUP_ARGS+=(--normalvram)
     elif [ "${VRAM:-auto}" == "low" ]; then
         STARTUP_ARGS+=(--lowvram)
     elif [ "${VRAM:-auto}" == "no" ]; then
@@ -47,8 +73,29 @@ if [ "${VRAM:-auto}" != "auto" ]; then
         echo "Ignoring VRAM environment variable expected 'auto', 'high', 'normal', 'low' or 'no' got '$VRAM')"
     fi
 fi
-if [ "${SPLIT_CROSS_ATTENTION}" == "true" ];then
-    STARTUP_ARGS+=("--use-split-cross-attention")
+
+# Performance & Debugging Flags
+if [ "${FAST:-none}" != "none" ]; then
+    if [ "${FAST:-none}" == "all" ]; then
+        STARTUP_ARGS+=(--fast)
+    else
+		STARTUP_ARGS+=(--fast)
+		STARTUP_ARGS+=("${FAST}")
+	fi
+fi
+
+# ComfyUI Manager Flags
+if [ "${ENABLE_MANAGER}" == "true" ];then
+    STARTUP_ARGS+=("--enable-manager")
+fi
+
+# Logging & Misc Flags
+if [ "${LOG_VERBOSITY:-INFO}" != "INFO" ];then
+    STARTUP_ARGS+=("--verbose")
+	STARTUP_ARGS+=("${LOG_VERBOSITY}")
+fi
+if [ "${MULTI_USER}" == "true" ];then
+    STARTUP_ARGS+=("--multi-user")
 fi
 
 echo "Activating Virtual Environment..."
