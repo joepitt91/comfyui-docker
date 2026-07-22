@@ -21,15 +21,16 @@ if [ -z "$(ls -A /opt/content/models/configs/)" ]; then
     cp -r /opt/ComfyUI/models/configs/* /opt/content/models/configs/
 fi
 
-STARTUP_ARGS=("--listen" "${LISTEN_ADDR:-0.0.0.0}" "--enable-cors-header" "${CORS_HEADER:-*}" "--max-upload-size"
-    "${MAX_UPLOAD_MB:-100}" "--base-directory" "/opt/content" "--temp-directory" "/tmp/comfyui" "--disable-auto-launch")
+STARTUP_ARGS=("--base-directory" "/opt/content" "--temp-directory" "/tmp/comfyui" "--disable-auto-launch")
 
+# Network & Server Flags
+STARTUP_ARGS+=("--listen" "${LISTEN_ADDR:-0.0.0.0}")
 if [ -f /etc/ssl/private/key.pem ] && [ -f /etc/ssl/private/cert.pem ]; then
     STARTUP_ARGS+=("--tls-keyfile" "/etc/ssl/private/key.pem"
         "--tls-certfile" "/etc/ssl/private/cert.pem")
 fi
-
-
+STARTUP_ARGS+=("--enable-cors-header" "${CORS_HEADER:-*}")
+STARTUP_ARGS+=("--max-upload-size" "${MAX_UPLOAD_MB:-100}")
 
 # Attention Flags
 if [ "${SPLIT_CROSS_ATTENTION}" == "true" ];then
@@ -79,8 +80,7 @@ if [ "${FAST:-none}" != "none" ]; then
     if [ "${FAST:-none}" == "all" ]; then
         STARTUP_ARGS+=(--fast)
     else
-		STARTUP_ARGS+=(--fast)
-		STARTUP_ARGS+=("${FAST}")
+		STARTUP_ARGS+=(--fast "${FAST}")
 	fi
 fi
 
@@ -91,8 +91,7 @@ fi
 
 # Logging & Misc Flags
 if [ "${LOG_VERBOSITY:-INFO}" != "INFO" ];then
-    STARTUP_ARGS+=("--verbose")
-	STARTUP_ARGS+=("${LOG_VERBOSITY}")
+    STARTUP_ARGS+=("--verbose" "${LOG_VERBOSITY}")
 fi
 if [ "${MULTI_USER}" == "true" ];then
     STARTUP_ARGS+=("--multi-user")
@@ -105,4 +104,5 @@ echo "Activating Virtual Environment..."
 echo "Starting ComfyUI with these options:"
 echo "${STARTUP_ARGS[@]}"
 echo "----------"
+echo
 python3 /opt/ComfyUI/main.py "${STARTUP_ARGS[@]}"
