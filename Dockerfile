@@ -17,7 +17,7 @@ ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate &&\
     pip install --no-cache-dir --quiet -r requirements.txt &&\
     pip install --no-cache-dir --quiet -r manager_requirements.txt &&\
-    pip install --no-cache-dir --quiet flash-attn PyOpenGL PyOpenGL_accelerate sageattention
+    pip install --no-cache-dir --quiet flash-attn matrix-nio PyOpenGL PyOpenGL_accelerate sageattention
 
 FROM python:3.13-slim AS amd_torch
 RUN python3 -m venv /opt/ComfyUI.venv
