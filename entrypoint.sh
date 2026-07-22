@@ -21,24 +21,48 @@ if [ -z "$(ls -A /opt/content/models/configs/)" ]; then
     cp -r /opt/ComfyUI/models/configs/* /opt/content/models/configs/
 fi
 
-STARTUP_ARGS=("--listen" "${LISTEN_ADDR:-0.0.0.0}" "--enable-cors-header" "${CORS_HEADER:-*}" "--max-upload-size"
-    "${MAX_UPLOAD_MB:-100}" "--base-directory" "/opt/content" "--temp-directory" "/tmp/comfyui" "--disable-auto-launch")
+STARTUP_ARGS=("--base-directory" "/opt/content" "--temp-directory" "/tmp/comfyui" "--disable-auto-launch")
 
+# Network & Server Flags
+STARTUP_ARGS+=("--listen" "${LISTEN_ADDR:-0.0.0.0}")
 if [ -f /etc/ssl/private/key.pem ] && [ -f /etc/ssl/private/cert.pem ]; then
     STARTUP_ARGS+=("--tls-keyfile" "/etc/ssl/private/key.pem"
         "--tls-certfile" "/etc/ssl/private/cert.pem")
 fi
+STARTUP_ARGS+=("--enable-cors-header" "${CORS_HEADER:-*}")
+STARTUP_ARGS+=("--max-upload-size" "${MAX_UPLOAD_MB:-100}")
 
+# Attention Flags
+if [ "${SPLIT_CROSS_ATTENTION}" == "true" ];then
+    STARTUP_ARGS+=("--use-split-cross-attention")
+fi
+if [ "${QUAD_CROSS_ATTENTION}" == "true" ];then
+    STARTUP_ARGS+=("--use-quad-cross-attention")
+fi
+if [ "${PYTORCH_CROSS_ATTENTION}" == "true" ];then
+    STARTUP_ARGS+=("--use-pytorch-cross-attention")
+fi
+if [ "${SAGE_ATTENTION}" == "true" ];then
+    STARTUP_ARGS+=("--use-sage-attention")
+fi
+if [ "${XFORMERS}" == "false" ];then
+    STARTUP_ARGS+=("--disable-xformers")
+fi
+if [ "${FORCE_UPCAST_ATTENTION}" == "true" ];then
+    STARTUP_ARGS+=("--force-upcast-attention")
+fi
+if [ "${DONT_UPCAST_ATTENTION}" == "true" ];then
+    STARTUP_ARGS+=("--dont-upcast-attention")
+fi
+
+# VRAM & Memory Flags
 if [ "${GPU_ONLY:-false}" == "true" ]; then
     STARTUP_ARGS+=(--gpu-only)
 elif [ "${CPU_ONLY:-false}" == "true" ]; then
     STARTUP_ARGS+=("--cpu")
-fi
-if [ "${VRAM:-auto}" != "auto" ]; then
+elif [ "${VRAM:-auto}" != "auto" ]; then
     if [ "${VRAM:-auto}" == "high" ]; then
         STARTUP_ARGS+=(--highvram)
-    elif [ "${VRAM:-auto}" == "normal" ]; then
-        STARTUP_ARGS+=(--normalvram)
     elif [ "${VRAM:-auto}" == "low" ]; then
         STARTUP_ARGS+=(--lowvram)
     elif [ "${VRAM:-auto}" == "no" ]; then
@@ -47,8 +71,27 @@ if [ "${VRAM:-auto}" != "auto" ]; then
         echo "Ignoring VRAM environment variable expected 'auto', 'high', 'normal', 'low' or 'no' got '$VRAM')"
     fi
 fi
-if [ "${SPLIT_CROSS_ATTENTION}" == "true" ];then
-    STARTUP_ARGS+=("--use-split-cross-attention")
+
+# Performance & Debugging Flags
+if [ "${FAST:-none}" != "none" ]; then
+    if [ "${FAST:-none}" == "all" ]; then
+        STARTUP_ARGS+=(--fast)
+    else
+		STARTUP_ARGS+=(--fast "${FAST}")
+	fi
+fi
+
+# ComfyUI Manager Flags
+if [ "${ENABLE_MANAGER}" == "true" ];then
+    STARTUP_ARGS+=("--enable-manager")
+fi
+
+# Logging & Misc Flags
+if [ "${LOG_VERBOSITY:-INFO}" != "INFO" ];then
+    STARTUP_ARGS+=("--verbose" "${LOG_VERBOSITY}")
+fi
+if [ "${MULTI_USER}" == "true" ];then
+    STARTUP_ARGS+=("--multi-user")
 fi
 
 echo "Activating Virtual Environment..."
@@ -58,4 +101,5 @@ echo "Activating Virtual Environment..."
 echo "Starting ComfyUI with these options:"
 echo "${STARTUP_ARGS[@]}"
 echo "----------"
+echo
 python3 /opt/ComfyUI/main.py "${STARTUP_ARGS[@]}"
