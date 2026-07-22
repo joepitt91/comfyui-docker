@@ -86,7 +86,12 @@ ENV ENABLE_MANAGER=false
 ENV LOG_VERBOSITY=INFO
 ENV MULTI_USER=false
 
+# Home path fixes
+ENV HOME=/opt/content
+ENV HF_HOME=/opt/content/.cache/huggingface
+ENV TORCH_HOME=/opt/content/.cache/torch
 ENV XDG_CACHE_HOME=/opt/content/cache
+
 EXPOSE 8188
 LABEL org.opencontainers.image.authors=joepitt91
 LABEL org.opencontainers.image.base.name=docker.io/_/python:3.13-slim
