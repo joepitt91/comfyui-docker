@@ -98,7 +98,7 @@ LABEL org.opencontainers.image.url=https://github.com/joepitt91/comfyui-docker
 STOPSIGNAL SIGINT
 WORKDIR /opt/ComfyUI
 RUN sed -i 's/Components: main/Components: main non-free/gm' /etc/apt/sources.list.d/debian.sources &&\
-    apt update && apt install git libcudart12 -yq && rm -rf /var/lib/apt/list/* &&\
+    apt update && apt install gcc git libcudart12 -yq && rm -rf /var/lib/apt/list/* &&\
     mkdir -p /etc/ssl/private/ /opt/content /opt/ComfyUI /opt/ComfyUI.venv /tmp/comfyui /opt/ComfyUI/user && \
     chown -R nobody:nogroup /etc/ssl/private/ /opt/content /opt/ComfyUI /opt/ComfyUI.venv /tmp/comfyui
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
