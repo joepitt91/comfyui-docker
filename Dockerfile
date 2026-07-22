@@ -35,7 +35,7 @@ FROM python:3.13-slim AS nvidia_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
-    pip install --no-cache-dir --quiet torch torchaudio torchvision --index-url https://download.pytorch.org/whl/cu132
+    pip install --no-cache-dir --quiet torch torchaudio torchvision
 
 # Phrase 2 - Combine dependencies
 
