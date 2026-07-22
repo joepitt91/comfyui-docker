@@ -45,9 +45,6 @@ fi
 if [ "${SAGE_ATTENTION}" == "true" ];then
     STARTUP_ARGS+=("--use-sage-attention")
 fi
-if [ "${FLASH_ATTENTION}" == "true" ];then
-    STARTUP_ARGS+=("--use-flash-attention")
-fi
 if [ "${XFORMERS}" == "false" ];then
     STARTUP_ARGS+=("--disable-xformers")
 fi

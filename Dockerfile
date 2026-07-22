@@ -23,21 +23,21 @@ RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
     pip install --no-cache-dir --quiet torch torchaudio torchvision --index-url https://download.pytorch.org/whl/rocm7.2 &&\
-    pip install --no-cache-dir --quiet flash-attn matrix-nio PyOpenGL PyOpenGL_accelerate sageattention
+    pip install --no-cache-dir --quiet matrix-nio PyOpenGL PyOpenGL_accelerate sageattention
 
 FROM python:3.13-slim AS intel_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
     pip install --no-cache-dir --quiet torch torchaudio torchvision --index-url https://download.pytorch.org/whl/xpu &&\
-    pip install --no-cache-dir --quiet flash-attn matrix-nio PyOpenGL PyOpenGL_accelerate sageattention
+    pip install --no-cache-dir --quiet matrix-nio PyOpenGL PyOpenGL_accelerate sageattention
 
 FROM python:3.13-slim AS nvidia_torch
 RUN python3 -m venv /opt/ComfyUI.venv
 ARG TORCH_VERSION=latest
 RUN . /opt/ComfyUI.venv/bin/activate && \
     pip install --no-cache-dir --quiet torch torchaudio torchvision &&\
-    pip install --no-cache-dir --quiet flash-attn matrix-nio PyOpenGL PyOpenGL_accelerate sageattention
+    pip install --no-cache-dir --quiet matrix-nio PyOpenGL PyOpenGL_accelerate sageattention
 
 # Phrase 2 - Combine dependencies
 
@@ -68,7 +68,6 @@ ENV SPLIT_CROSS_ATTENTION=false
 ENV QUAD_CROSS_ATTENTION=false
 ENV PYTORCH_CROSS_ATTENTION=false
 ENV SAGE_ATTENTION=false
-ENV FLASH_ATTENTION=false
 ENV XFORMERS=true
 ENV FORCE_UPCAST_ATTENTION=false
 ENV DONT_UPCAST_ATTENTION=false

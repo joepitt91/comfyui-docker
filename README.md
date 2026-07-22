@@ -168,7 +168,6 @@ only variables being changed from their Default need to be present in the file.
 | `QUAD_CROSS_ATTENTION` | Use sub-quadratic cross attention optimization. | `false` |
 | `PYTORCH_CROSS_ATTENTION` | Use PyTorch 2.0 cross attention. | `false` |
 | `SAGE_ATTENTION` | Use Sage attention. | `false` |
-| `FLASH_ATTENTION` | Use FlashAttention. | `false` |
 | `XFORMERS` | Use xformers. | `true` |
 | `FORCE_UPCAST_ATTENTION` | Force attention upcasting. | `false` |
 | `DONT_UPCAST_ATTENTION` | Disable all attention upcasting. | `false` |
