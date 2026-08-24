@@ -122,21 +122,26 @@ ENV CPU_ONLY=true
 COPY --chown=nobody:nogroup --from=base /opt /opt
 
 FROM final_base AS intel
-ENV  LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu \
+ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6 LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu \
     SYCL_UR_USE_LEVEL_ZERO_V2=1 ONEAPI_DEVICE_SELECTOR=level_zero:0
 COPY --chown=nobody:nogroup --from=intel_flatten /opt /opt
 USER root
-RUN sed -i 's/main/main contrib non-free non-free-firmware/g' /etc/apt/sources.list.d/debian.sources &&\
-    apt-get -yq update &&\
-    apt-get -yq install clinfo firmware-intel-graphics intel-gpu-tools libze-dev libze1 &&\
-    echo "Types: deb" >/etc/apt/sources.list.d/sid.sources &&\
-    echo "URIs: http://deb.debian.org/debian" >>/etc/apt/sources.list.d/sid.sources &&\
-    echo "Suites: sid"  >>/etc/apt/sources.list.d/sid.sources &&\
-    echo "Components: main contrib non-free non-free-firmware"  >>/etc/apt/sources.list.d/sid.sources &&\
-    echo "Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg"  >>/etc/apt/sources.list.d/sid.sources &&\
-    apt-get -yq update &&\
-    apt-get -yq install intel-opencl-icd libze-intel-gpu1 &&\
-    rm -rf /var/lib/lists/*
+
+RUN apt-get update &&\
+    apt-get -yq install ocl-icd-libopencl1 wget &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    wget -q https://github.com/intel/intel-graphics-compiler/releases/download/v2.40.13/intel-igc-core-2_2.40.13+22418_amd64.deb &&\
+    wget -q https://github.com/intel/intel-graphics-compiler/releases/download/v2.40.13/intel-igc-opencl-2_2.40.13+22418_amd64.deb &&\
+    wget -q https://github.com/intel/compute-runtime/releases/download/26.31.39395.13/intel-ocloc-dbgsym_26.31.39395.13-0_amd64.ddeb &&\
+    wget -q https://github.com/intel/compute-runtime/releases/download/26.31.39395.13/intel-ocloc_26.31.39395.13-0_amd64.deb &&\
+    wget -q https://github.com/intel/compute-runtime/releases/download/26.31.39395.13/intel-opencl-icd-dbgsym_26.31.39395.13-0_amd64.ddeb &&\
+    wget -q https://github.com/intel/compute-runtime/releases/download/26.31.39395.13/intel-opencl-icd_26.31.39395.13-0_amd64.deb &&\
+    wget -q https://github.com/intel/compute-runtime/releases/download/26.31.39395.13/libigdgmm12_22.10.0_amd64.deb &&\
+    wget -q https://github.com/intel/compute-runtime/releases/download/26.31.39395.13/libze-intel-gpu1-dbgsym_26.31.39395.13-0_amd64.ddeb &&\
+    wget -q https://github.com/intel/compute-runtime/releases/download/26.31.39395.13/libze-intel-gpu1_26.31.39395.13-0_amd64.deb &&\
+    dpkg -i *.deb &&\
+    rm *.deb
+
 USER nobody
 
 FROM final_base AS nvidia
